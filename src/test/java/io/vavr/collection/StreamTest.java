@@ -37,6 +37,11 @@ import static io.vavr.collection.Stream.concat;
 
 public class StreamTest extends AbstractLinearSeqTest {
 
+    @Override
+    protected String className() {
+        return "Stream";
+    }
+
     // -- construction
 
     @Override
@@ -236,27 +241,6 @@ public class StreamTest extends AbstractLinearSeqTest {
         assertThat(t.removeAll(of(4, 5))).isEqualTo(t).isNotSameAs(t);
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    @Override
-    public void shouldRemoveExistingElements() {
-        final Seq<Integer> seq = of(1, 2, 3);
-        assertThat(seq.removeAll(i -> i == 1)).isEqualTo(of(2, 3));
-        assertThat(seq.removeAll(i -> i == 2)).isEqualTo(of(1, 3));
-        assertThat(seq.removeAll(i -> i == 3)).isEqualTo(of(1, 2));
-        assertThat(seq.removeAll(ignore -> true)).isEmpty();
-        assertThat(seq.removeAll(ignore -> false)).isEqualTo(of(1, 2, 3)).isNotSameAs(of(1, 2, 3));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    @Override
-    public void shouldNotRemoveAllNonMatchedElementsFromNonNil() {
-        final Seq<Integer> t = of(1, 2, 3);
-        final Predicate<Integer> isTooBig = i -> i >= 4;
-        assertThat(t.removeAll(isTooBig)).isEqualTo(t).isNotSameAs(t);
-    }
-
     @Test
     @Override
     public void shouldNotRemoveAllNonObjectsElementsFromNonNil() {
@@ -347,28 +331,28 @@ public class StreamTest extends AbstractLinearSeqTest {
 
     @Test
     public void shouldGenerateInfiniteStreamBasedOnSupplier() {
-        assertThat(Stream.continually(() -> 1).take(13).reduce((i, j) -> i + j)).isEqualTo(13);
+        assertThat(Stream.continually(() -> 1).take(13).reduce(Integer::sum)).isEqualTo(13);
     }
 
     // -- static iterate(T, Function)
 
     @Test
     public void shouldGenerateInfiniteStreamBasedOnSupplierWithAccessToPreviousValue() {
-        assertThat(Stream.iterate(2, (i) -> i + 2).take(3).reduce((i, j) -> i + j)).isEqualTo(12);
+        assertThat(Stream.iterate(2, (i) -> i + 2).take(3).reduce(Integer::sum)).isEqualTo(12);
     }
 
     // -- static iterate(Supplier<Option>)
 
     @Test
     public void shouldGenerateInfiniteStreamBasedOnOptionSupplier() {
-        assertThat(Stream.iterate(() -> Option.of(1)).take(5).reduce((i, j) -> i + j)).isEqualTo(5);
+        assertThat(Stream.iterate(() -> Option.of(1)).take(5).reduce(Integer::sum)).isEqualTo(5);
     }
 
     // -- static continually (T)
 
     @Test
     public void shouldGenerateInfiniteStreamBasedOnRepeatedElement() {
-        assertThat(Stream.continually(2).take(3).reduce((i, j) -> i + j)).isEqualTo(6);
+        assertThat(Stream.continually(2).take(3).reduce(Integer::sum)).isEqualTo(6);
     }
 
     // -- static cons(T, Supplier)
@@ -737,8 +721,8 @@ public class StreamTest extends AbstractLinearSeqTest {
 
     @Test
     public void shouldReturnSelfOnConvertToStream() {
-        final Value<Integer> value = of(1, 2, 3);
-        assertThat(value.toStream()).isSameAs(value);
+        final Stream<Integer> testee = of(1, 2, 3);
+        assertThat(testee.toStream()).isSameAs(testee);
     }
 
     // -- toString
@@ -771,7 +755,7 @@ public class StreamTest extends AbstractLinearSeqTest {
 
     @Test
     public void shouldTransform() {
-        String transformed = of(42).transform(v -> String.valueOf(v.get()));
+        String transformed = of(42).transform(v -> String.valueOf(v.head()));
         assertThat(transformed).isEqualTo("42");
     }
 

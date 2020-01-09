@@ -643,6 +643,11 @@ public final class Vector<T> implements IndexedSeq<T>, Serializable {
     }
 
     @Override
+    public String className() {
+        return "Vector";
+    }
+
+    @Override
     public <R> Vector<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -717,13 +722,6 @@ public final class Vector<T> implements IndexedSeq<T>, Serializable {
         return Collections.filterNot(this, predicate);
     }
 
-    @Deprecated
-    @Override
-    public Vector<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return Collections.reject(this, predicate);
-    }
-
     @Override
     public <U> Vector<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -795,16 +793,6 @@ public final class Vector<T> implements IndexedSeq<T>, Serializable {
 
     @Override
     public Vector<T> intersperse(T element) { return ofAll(iterator().intersperse(element)); }
-
-    /**
-     * A {@code Vector} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public boolean isAsync() {
-        return false;
-    }
 
     @Override
     public boolean isEmpty() { return length() == 0; }
@@ -992,13 +980,6 @@ public final class Vector<T> implements IndexedSeq<T>, Serializable {
     @Override
     public Vector<T> removeAll(Iterable<? extends T> elements) {
         return io.vavr.collection.Collections.removeAll(this, elements);
-    }
-
-    @Override
-    @Deprecated
-    public Vector<T> removeAll(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
     }
 
     @Override
@@ -1308,10 +1289,7 @@ public final class Vector<T> implements IndexedSeq<T>, Serializable {
     }
 
     @Override
-    public String stringPrefix() { return "Vector"; }
-
-    @Override
-    public String toString() { return mkString(stringPrefix() + "(", ", ", ")"); }
+    public String toString() { return mkString(className() + "(", ", ", ")"); }
 }
 
 interface VectorModule {

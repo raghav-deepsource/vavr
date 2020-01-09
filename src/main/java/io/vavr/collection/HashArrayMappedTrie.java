@@ -93,6 +93,11 @@ interface HashArrayMappedTrieModule {
         }
 
         @Override
+        public String className() {
+            return "LeafNodeIterator";
+        }
+
+        @Override
         public boolean hasNext() {
             return ptr < total;
         }

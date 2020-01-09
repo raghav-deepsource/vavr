@@ -36,7 +36,7 @@ abstract class AbstractQueue<T, Q extends AbstractQueue<T, Q>> implements Traver
      */
     public Tuple2<T, Q> dequeue() {
         if (isEmpty()) {
-            throw new NoSuchElementException("dequeue of empty " + getClass().getSimpleName());
+            throw new NoSuchElementException("dequeue of empty " + className());
         } else {
             return Tuple.of(head(), tail());
         }
@@ -91,7 +91,7 @@ abstract class AbstractQueue<T, Q extends AbstractQueue<T, Q>> implements Traver
      */
     public T peek() {
         if (isEmpty()) {
-            throw new NoSuchElementException("peek of empty " + getClass().getSimpleName());
+            throw new NoSuchElementException("peek of empty " + className());
         } else {
             return head();
         }
@@ -165,19 +165,6 @@ abstract class AbstractQueue<T, Q extends AbstractQueue<T, Q>> implements Traver
         return Collections.removeAll((Q) this, elements);
     }
 
-    @Deprecated
-    public Q removeAll(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    @Override
-    public Q reject(Predicate<? super T> predicate) {
-        return Collections.reject((Q) this, predicate);
-    }
-
     @Override
     public Q takeWhile(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate, "predicate is null");
@@ -199,7 +186,7 @@ abstract class AbstractQueue<T, Q extends AbstractQueue<T, Q>> implements Traver
 
     @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
 }

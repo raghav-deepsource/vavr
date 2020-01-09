@@ -868,6 +868,11 @@ public abstract class Stream<T> implements LinearSeq<T> {
     }
 
     @Override
+    public final String className() {
+        return "Stream";
+    }
+
+    @Override
     public final <R> Stream<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -1038,13 +1043,6 @@ public abstract class Stream<T> implements LinearSeq<T> {
         return Collections.filterNot(this, predicate);
     }
 
-    @Deprecated
-    @Override
-    public final Stream<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return Collections.reject(this, predicate);
-    }
-
     @Override
     public final <U> Stream<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -1176,16 +1174,6 @@ public abstract class Stream<T> implements LinearSeq<T> {
                 return tail.isEmpty() ? tail : cons(element, () -> tail.intersperse(element));
             });
         }
-    }
-
-    /**
-     * A {@code Stream} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public final boolean isAsync() {
-        return false;
     }
 
     /**
@@ -1389,13 +1377,6 @@ public abstract class Stream<T> implements LinearSeq<T> {
     }
 
     @Override
-    @Deprecated
-    public final Stream<T> removeAll(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
-    }
-
-    @Override
     public final Stream<T> replace(T currentElement, T newElement) {
         if (isEmpty()) {
             return this;
@@ -1542,11 +1523,6 @@ public abstract class Stream<T> implements LinearSeq<T> {
         } else {
             return Tuple.of(split._1.append(split._2.head()), split._2.tail());
         }
-    }
-
-    @Override
-    public final String stringPrefix() {
-        return "Stream";
     }
 
     @Override
@@ -1803,9 +1779,7 @@ public abstract class Stream<T> implements LinearSeq<T> {
      * This is a singleton, i.e. not Cloneable.
      *
      * @param <T> Component type of the Stream.
-     * @deprecated will be removed from the public API
      */
-    @Deprecated
     public static final class Empty<T> extends Stream<T> implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -1874,7 +1848,7 @@ public abstract class Stream<T> implements LinearSeq<T> {
 
         @Override
         public String toString() {
-            return stringPrefix() + "()";
+            return className() + "()";
         }
 
         /**
@@ -1892,9 +1866,7 @@ public abstract class Stream<T> implements LinearSeq<T> {
      * Non-empty {@code Stream}, consisting of a {@code head}, and {@code tail}.
      *
      * @param <T> Component type of the Stream.
-     * @deprecated will be removed from the public API
      */
-    @Deprecated
     public static abstract class Cons<T> extends Stream<T> {
 
         private static final long serialVersionUID = 1L;
@@ -1935,7 +1907,7 @@ public abstract class Stream<T> implements LinearSeq<T> {
 
         @Override
         public String toString() {
-            final StringBuilder builder = new StringBuilder(stringPrefix()).append("(");
+            final StringBuilder builder = new StringBuilder(className()).append("(");
             Stream<T> stream = this;
             while (stream != null && !stream.isEmpty()) {
                 final Cons<T> cons = (Cons<T>) stream;
@@ -2181,6 +2153,11 @@ public abstract class Stream<T> implements LinearSeq<T> {
         }
 
         @Override
+        public String className() {
+            return "StreamIterator";
+        }
+
+        @Override
         public boolean hasNext() {
             return !current.get().isEmpty();
         }
@@ -2206,6 +2183,11 @@ public abstract class Stream<T> implements LinearSeq<T> {
         FlatMapIterator(Iterator<? extends T> inputs, Function<? super T, ? extends Iterable<? extends U>> mapper) {
             this.inputs = inputs;
             this.mapper = mapper;
+        }
+
+        @Override
+        public String className() {
+            return "FlatMapIterator";
         }
 
         @Override

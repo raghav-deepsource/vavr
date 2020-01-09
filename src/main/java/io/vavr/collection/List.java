@@ -150,16 +150,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return Nil.instance();
     }
 
-    /**
-     * A {@code List} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public final boolean isAsync() {
-        return false;
-    }
-
     @Override
     public abstract boolean isEmpty();
 
@@ -759,6 +749,11 @@ public abstract class List<T> implements LinearSeq<T> {
     }
 
     @Override
+    public String className() {
+        return "List";
+    }
+
+    @Override
     public final <R> List<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -872,13 +867,6 @@ public abstract class List<T> implements LinearSeq<T> {
     public final List<T> filterNot(Predicate<? super T> predicate){
         Objects.requireNonNull(predicate, "predicate is null");
         return Collections.filterNot(this, predicate);
-    }
-
-    @Deprecated
-    @Override
-    public final List<T> reject(Predicate<? super T> predicate){
-        Objects.requireNonNull(predicate, "predicate is null");
-        return Collections.reject(this, predicate);
     }
 
     @Override
@@ -1333,13 +1321,6 @@ public abstract class List<T> implements LinearSeq<T> {
     }
 
     @Override
-    @Deprecated
-    public final List<T> removeAll(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
-    }
-
-    @Override
     public final List<T> replace(T currentElement, T newElement) {
         List<T> preceding = Nil.instance();
         List<T> tail = this;
@@ -1523,11 +1504,6 @@ public abstract class List<T> implements LinearSeq<T> {
                 return Tuple.of(t._1.prepend(t._2.head()).reverse(), t._2.tail());
             }
         }
-    }
-
-    @Override
-    public final String stringPrefix() {
-        return "List";
     }
 
     @Override
@@ -1730,9 +1706,7 @@ public abstract class List<T> implements LinearSeq<T> {
      * Representation of the singleton empty {@code List}.
      *
      * @param <T> Component type of the List.
-     * @deprecated will be removed from the public API
      */
-    @Deprecated
     public static final class Nil<T> extends List<T> implements Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -1786,7 +1760,7 @@ public abstract class List<T> implements LinearSeq<T> {
 
         @Override
         public String toString() {
-            return stringPrefix() + "()";
+            return className() + "()";
         }
 
         /**
@@ -1804,9 +1778,7 @@ public abstract class List<T> implements LinearSeq<T> {
      * Non-empty {@code List}, consisting of a {@code head} and a {@code tail}.
      *
      * @param <T> Component type of the List.
-     * @deprecated will be removed from the public API
      */
-    @Deprecated
     // DEV NOTE: class declared final because of serialization proxy pattern (see Effective Java, 2nd ed., p. 315)
     public static final class Cons<T> extends List<T> implements Serializable {
 
@@ -1860,7 +1832,7 @@ public abstract class List<T> implements LinearSeq<T> {
 
         @Override
         public String toString() {
-            return mkString(stringPrefix() + "(", ", ", ")");
+            return mkString(className() + "(", ", ", ")");
         }
 
         /**

@@ -32,7 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static io.vavr.OutputTester.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -845,27 +844,6 @@ public class CharSeqTest {
         assertThat(t.filterNot(i -> false)).isSameAs(t);
     }
 
-    // -- reject
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldRejectEmptyTraversable() {
-        assertThat(CharSeq.empty().reject(ignored -> true)).isSameAs(CharSeq.empty());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldRejectNonEmptyTraversable() {
-        assertThat(CharSeq.of('1', '2', '3', '4').reject(i -> i == '2' || i == '4')).isEqualTo(CharSeq.of('1', '3'));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldRejectNonEmptyTraversableNoneMatch() {
-        final CharSeq t = CharSeq.of('1', '2', '3', '4');
-        assertThat(t.reject(i -> false)).isSameAs(t);
-    }
-
     // -- find
 
     @Test
@@ -1058,14 +1036,6 @@ public class CharSeqTest {
     @Test
     public void shouldReturnSomeInitWhenCallingInitOptionOnNonNil() {
         assertThat(CharSeq.of('1', '2', '3').initOption()).isEqualTo(Option.some(CharSeq.of('1', '2')));
-    }
-
-    // -- isAsync
-
-    @Test
-    public void shouldVerifyAsyncProperty() {
-        assertThat(CharSeq.empty().isAsync()).isFalse();
-        assertThat(CharSeq.of('1').isAsync()).isFalse();
     }
 
     // -- isLazy
@@ -1762,34 +1732,6 @@ public class CharSeqTest {
         assertThat(CharSeq.of('a', 'b', 'c').startsWith(CharSeq.of('b', 'd'), 1)).isFalse();
     }
 
-    // -- stderr
-
-    @Test
-    public void shouldWriteToStderr() {
-        assertThat(captureErrOut(()->CharSeq.of('1', '2', '3').stderr())).isEqualTo("1\n" +
-                "2\n" +
-                "3\n");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldHandleStderrIOException() {
-        withFailingErrOut(()->CharSeq.of('0').stderr());
-    }
-
-    // -- stdout
-
-    @Test
-    public void shouldWriteToStdout() {
-        assertThat(captureStdOut(()->CharSeq.of('1', '2', '3').stdout())).isEqualTo("1\n" +
-                "2\n" +
-                "3\n");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldHandleStdoutIOException() {
-        withFailingStdOut(()->CharSeq.of('0').stdout());
-    }
-
     // -- sum
 
     @Test
@@ -2084,13 +2026,6 @@ public class CharSeqTest {
         expected.add('1');
         expected.add('3');
         assertThat(CharSeq.of('1', '2', '2', '3').toJavaSet()).isEqualTo(expected);
-    }
-
-    // -- stringPrefix
-
-    @Test
-    public void shouldReturnStringPrefix() {
-        assertThat(CharSeq.of('1').stringPrefix()).isEqualTo("CharSeq");
     }
 
     // ++++++ OBJECT ++++++
@@ -3020,28 +2955,6 @@ public class CharSeqTest {
         assertThat(charSeq.removeAll(List.of((Character) null))).isSameAs(charSeq);
     }
 
-    // -- removeAll(Predicate)
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldRemoveAllElementsByPredicateFromNil() {
-        assertThat(CharSeq.empty().removeAll(Character::isDigit)).isSameAs(CharSeq.empty());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldRemoveAllMatchedElementsFromNonNil() {
-        assertThat(CharSeq.of('1', '2', '3', 'a', 'b', 'c').removeAll(Character::isDigit))
-                .isEqualTo(CharSeq.of('a', 'b', 'c'));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void shouldNotRemoveAllNonMatchedElementsFromNonNil() {
-        final CharSeq t = CharSeq.of('a', 'b', 'c');
-        assertThat(t.removeAll(Character::isDigit)).isSameAs(t);
-    }
-
     // -- removeAll(Object)
 
     @Test
@@ -3427,7 +3340,7 @@ public class CharSeqTest {
 
     @Test
     public void shouldTransform() {
-        final String transformed = CharSeq.of('0').transform(v -> String.valueOf(v.get()));
+        final String transformed = CharSeq.of('0').transform(v -> String.valueOf(v.head()));
         assertThat(transformed).isEqualTo("0");
     }
 

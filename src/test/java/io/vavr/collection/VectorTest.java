@@ -35,6 +35,11 @@ import java.util.stream.Collector;
 public class VectorTest extends AbstractIndexedSeqTest {
 
     @Override
+    protected String className() {
+        return "Vector";
+    }
+
+    @Override
     protected <T> Collector<T, ArrayList<T>, Vector<T>> collector() {
         return Vector.collector();
     }
@@ -265,7 +270,7 @@ public class VectorTest extends AbstractIndexedSeqTest {
 
     @Test
     public void shouldTransform() {
-        final String transformed = of(42).transform(v -> String.valueOf(v.get()));
+        final String transformed = of(42).transform(v -> String.valueOf(v.head()));
         assertThat(transformed).isEqualTo("42");
     }
 

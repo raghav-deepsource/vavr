@@ -33,6 +33,11 @@ import java.util.stream.Collector;
 
 public class QueueTest extends AbstractLinearSeqTest {
 
+    @Override
+    protected String className() {
+        return "Queue";
+    }
+
     // -- construction
 
     @Override
@@ -379,7 +384,7 @@ public class QueueTest extends AbstractLinearSeqTest {
 
     @Test
     public void shouldTransform() {
-        final String transformed = of(42).transform(v -> String.valueOf(v.get()));
+        final String transformed = of(42).transform(v -> String.valueOf(v.head()));
         assertThat(transformed).isEqualTo("42");
     }
 

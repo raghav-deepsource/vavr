@@ -46,6 +46,11 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
         this.trie = trie;
     }
 
+    @Override
+    public String className() {
+        return "HashMap";
+    }
+
     /**
      * Returns a {@link java.util.stream.Collector} which may be used in conjunction with
      * {@link java.util.stream.Stream#collect(java.util.stream.Collector)} to obtain a {@link HashMap}.
@@ -552,12 +557,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
         return Maps.filterNot(this, this::createFromEntries, predicate);
     }
 
-    @Deprecated
-    @Override
-    public HashMap<K, V> reject(BiPredicate<? super K, ? super V> predicate) {
-        return Maps.reject(this, this::createFromEntries, predicate);
-    }
-
     @Override
     public HashMap<K, V> filter(Predicate<? super Tuple2<K, V>> predicate) {
         return Maps.filter(this, this::createFromEntries, predicate);
@@ -566,12 +565,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
     @Override
     public HashMap<K, V> filterNot(Predicate<? super Tuple2<K, V>> predicate) {
         return Maps.filterNot(this, this::createFromEntries, predicate);
-    }
-
-    @Deprecated
-    @Override
-    public HashMap<K, V> reject(Predicate<? super Tuple2<K, V>> predicate) {
-        return Maps.reject(this, this::createFromEntries, predicate);
     }
 
     @Override
@@ -584,12 +577,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
         return Maps.filterNotKeys(this, this::createFromEntries, predicate);
     }
 
-    @Deprecated
-    @Override
-    public HashMap<K, V> rejectKeys(Predicate<? super K> predicate) {
-        return Maps.rejectKeys(this, this::createFromEntries, predicate);
-    }
-
     @Override
     public HashMap<K, V> filterValues(Predicate<? super V> predicate) {
         return Maps.filterValues(this, this::createFromEntries, predicate);
@@ -598,12 +585,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
     @Override
     public HashMap<K, V> filterNotValues(Predicate<? super V> predicate) {
         return Maps.filterNotValues(this, this::createFromEntries, predicate);
-    }
-
-    @Deprecated
-    @Override
-    public HashMap<K, V> rejectValues(Predicate<? super V> predicate) {
-        return Maps.rejectValues(this, this::createFromEntries, predicate);
     }
 
     @Override
@@ -658,16 +639,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
     @Override
     public Option<HashMap<K, V>> initOption() {
         return Maps.initOption(this);
-    }
-
-    /**
-     * A {@code HashMap} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public boolean isAsync() {
-        return false;
     }
 
     @Override
@@ -787,13 +758,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
     }
 
     @Override
-    @Deprecated
-    public HashMap<K, V> removeAll(BiPredicate<? super K, ? super V> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
-    }
-
-    @Override
     public HashMap<K, V> removeAll(Iterable<? extends K> keys) {
         Objects.requireNonNull(keys, "keys is null");
         HashArrayMappedTrie<K, V> result = trie;
@@ -808,20 +772,6 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
         } else {
             return wrap(result);
         }
-    }
-
-    @Override
-    @Deprecated
-    public HashMap<K, V> removeKeys(Predicate<? super K> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return rejectKeys(predicate);
-    }
-
-    @Override
-    @Deprecated
-    public HashMap<K, V> removeValues(Predicate<? super V> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return rejectValues(predicate);
     }
 
     @Override
@@ -957,13 +907,8 @@ public final class HashMap<K, V> implements Map<K, V>, Serializable {
     }
 
     @Override
-    public String stringPrefix() {
-        return "HashMap";
-    }
-
-    @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
     private static <K, V> HashMap<K, V> wrap(HashArrayMappedTrie<K, V> trie) {

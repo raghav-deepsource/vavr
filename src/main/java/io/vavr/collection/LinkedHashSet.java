@@ -513,6 +513,11 @@ public final class LinkedHashSet<T> implements Set<T>, Serializable {
     }
 
     @Override
+    public String className() {
+        return "LinkedHashSet";
+    }
+
+    @Override
     public <R> LinkedHashSet<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -593,13 +598,6 @@ public final class LinkedHashSet<T> implements Set<T>, Serializable {
         return filter(predicate.negate());
     }
 
-    @Deprecated
-    @Override
-    public LinkedHashSet<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return filter(predicate.negate());
-    }
-
     @Override
     public <U> LinkedHashSet<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -668,16 +666,6 @@ public final class LinkedHashSet<T> implements Set<T>, Serializable {
         } else {
             return retainAll(elements);
         }
-    }
-
-    /**
-     * An {@code LinkedHashSet}'s value is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public boolean isAsync() {
-        return false;
     }
 
     @Override
@@ -985,13 +973,8 @@ public final class LinkedHashSet<T> implements Set<T>, Serializable {
     }
 
     @Override
-    public String stringPrefix() {
-        return "LinkedHashSet";
-    }
-
-    @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
     private static <T> LinkedHashMap<T, Object> addAll(LinkedHashMap<T, Object> initial,

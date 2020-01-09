@@ -702,6 +702,11 @@ public final class Array<T> implements IndexedSeq<T>, Serializable {
     }
 
     @Override
+    public String className() {
+        return "Array";
+    }
+
+    @Override
     public <R> Array<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -709,16 +714,6 @@ public final class Array<T> implements IndexedSeq<T>, Serializable {
     @Override
     public boolean hasDefiniteSize() {
         return true;
-    }
-
-    /**
-     * An {@code Array} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public boolean isAsync() {
-        return false;
     }
 
     /**
@@ -865,13 +860,6 @@ public final class Array<T> implements IndexedSeq<T>, Serializable {
     public Array<T> filterNot(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate, "predicate is null");
         return Collections.filterNot(this, predicate);
-    }
-
-    @Deprecated
-    @Override
-    public Array<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return Collections.reject(this, predicate);
     }
 
     @Override
@@ -1176,13 +1164,6 @@ public final class Array<T> implements IndexedSeq<T>, Serializable {
     @Override
     public Array<T> removeAll(Iterable<? extends T> elements) {
         return io.vavr.collection.Collections.removeAll(this, elements);
-    }
-
-    @Override
-    @Deprecated
-    public Array<T> removeAll(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reject(predicate);
     }
 
     @Override
@@ -1556,13 +1537,8 @@ public final class Array<T> implements IndexedSeq<T>, Serializable {
     }
 
     @Override
-    public String stringPrefix() {
-        return "Array";
-    }
-
-    @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
     private static <T> Object[] toArray(Iterable<T> elements) {

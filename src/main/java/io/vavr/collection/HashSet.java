@@ -493,6 +493,11 @@ public final class HashSet<T> implements Set<T>, Serializable {
     }
 
     @Override
+    public String className() {
+        return "HashSet";
+    }
+
+    @Override
     public <R> HashSet<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R> collect(partialFunction));
     }
@@ -576,13 +581,6 @@ public final class HashSet<T> implements Set<T>, Serializable {
         return filter(predicate.negate());
     }
 
-    @Deprecated
-    @Override
-    public HashSet<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return filter(predicate.negate());
-    }
-
     @Override
     public <U> HashSet<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -652,16 +650,6 @@ public final class HashSet<T> implements Set<T>, Serializable {
                 return (size == results.size()) ? this : results;
             }
         }
-    }
-
-    /**
-     * A {@code HashSet} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public boolean isAsync() {
-        return false;
     }
 
     @Override
@@ -955,13 +943,8 @@ public final class HashSet<T> implements Set<T>, Serializable {
     }
 
     @Override
-    public String stringPrefix() {
-        return "HashSet";
-    }
-
-    @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
     private static <T> HashArrayMappedTrie<T, T> addAll(HashArrayMappedTrie<T, T> initial,

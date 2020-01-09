@@ -276,6 +276,11 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
     }
 
     @Override
+    public String className() {
+        return "Tree";
+    }
+
+    @Override
     public final <R> Tree<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         return ofAll(iterator().<R>collect(partialFunction));
     }
@@ -311,16 +316,6 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
      */
     public final boolean isBranch() {
         return !(isEmpty() || isLeaf());
-    }
-
-    /**
-     * A {@code Tree} is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public final boolean isAsync() {
-        return false;
     }
 
     @Override
@@ -550,17 +545,6 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
         }
     }
 
-    @Deprecated
-    @Override
-    public final Seq<T> reject(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        if (isEmpty()) {
-            return Stream.empty();
-        } else {
-            return values().reject(predicate);
-        }
-    }
-
     @Override
     public final <U> Tree<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -724,11 +708,6 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
     }
 
     @Override
-    public final String stringPrefix() {
-        return "Tree";
-    }
-
-    @Override
     public final Seq<T> tail() {
         if (isEmpty()) {
             throw new UnsupportedOperationException("tail of empty tree");
@@ -816,7 +795,7 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
     public final <U> Tree<Tuple2<T, U>> zipAll(Iterable<? extends U> that, T thisElem, U thatElem) {
         Objects.requireNonNull(that, "that is null");
         if (isEmpty()) {
-            return io.vavr.collection.Iterator.<U>ofAll(that).map(elem -> Tuple.of(thisElem, elem)).toTree();
+            return Tree.ofAll(io.vavr.collection.Iterator.<U>ofAll(that).map(elem -> Tuple.of(thisElem, elem)));
         } else {
             final java.util.Iterator<? extends U> thatIter = that.iterator();
             final Tree<Tuple2<T, U>> tree = Tree.zipAll((Node<T>) this, thatIter, thatElem);
@@ -930,7 +909,7 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
 
         @Override
         public String toString() {
-            return mkString(stringPrefix() + "(", ", ", ")");
+            return mkString(className() + "(", ", ", ")");
         }
 
         @Override
@@ -1125,7 +1104,7 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
 
         @Override
         public String toString() {
-            return stringPrefix() + "()";
+            return className() + "()";
         }
 
         @Override
@@ -1209,7 +1188,7 @@ public abstract class Tree<T> implements Traversable<T>, Serializable {
                     .getChildren()
                     .map(child -> flatMap(child, mapper))
                     .filter(Tree::nonEmpty);
-            return of(mapped.get(), children.prependAll(mapped.getChildren()));
+            return of(mapped.head(), children.prependAll(mapped.getChildren()));
         }
     }
 

@@ -42,6 +42,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class IteratorTest extends AbstractTraversableTest {
 
     @Override
+    protected String className() {
+        return "Iterator";
+    }
+
+    @Override
     protected <T> IterableAssert<T> assertThat(Iterable<T> actual) {
         return new IterableAssert<T>(actual) {
             @SuppressWarnings("unchecked")
@@ -908,13 +913,6 @@ public class IteratorTest extends AbstractTraversableTest {
     }
 
     // -- toString()
-
-    @Ignore
-    @Override
-    @Test
-    public void shouldHaveAReasonableToString() {
-        // iterators are intermediate objects and should not have an equals, hashCode or toString
-    }
 
     @Ignore
     @Override

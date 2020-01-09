@@ -50,8 +50,8 @@ public final class IntMultimap<T> implements Traversable<T>, Serializable {
     }
 
     @Override
-    public boolean isAsync() {
-        return original.isAsync();
+    public String className() {
+        return "IntMultimap";
     }
 
     @Override
@@ -81,13 +81,8 @@ public final class IntMultimap<T> implements Traversable<T>, Serializable {
     }
 
     @Override
-    public String stringPrefix() {
-        return "IntMultimap";
-    }
-
-    @Override
     public String toString() {
-        return mkString(stringPrefix() + "(", ", ", ")");
+        return mkString(className() + "(", ", ", ")");
     }
 
     @Override
@@ -152,12 +147,6 @@ public final class IntMultimap<T> implements Traversable<T>, Serializable {
     @Override
     public IntMultimap<T> filterNot(Predicate<? super T> predicate) {
         return unit(original.filterNot(p -> predicate.test(p._2)));
-    }
-
-    @Deprecated
-    @Override
-    public IntMultimap<T> reject(Predicate<? super T> predicate) {
-        return unit(original.reject(p -> predicate.test(p._2)));
     }
 
     @Override

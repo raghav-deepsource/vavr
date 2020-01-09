@@ -57,11 +57,6 @@ public class ValidationTest extends AbstractValueTest {
         return true;
     }
 
-    @Override
-    protected int getPeekNonNilPerformingAnAction() {
-        return 1;
-    }
-
     // -- Validation.valid
 
     @Test

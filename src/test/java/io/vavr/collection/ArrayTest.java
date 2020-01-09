@@ -34,6 +34,11 @@ import java.util.stream.Collector;
 public class ArrayTest extends AbstractIndexedSeqTest {
 
     @Override
+    protected String className() {
+        return "Array";
+    }
+
+    @Override
     protected <T> Collector<T, ArrayList<T>, ? extends Seq<T>> collector() {
         return Array.collector();
     }
@@ -247,7 +252,7 @@ public class ArrayTest extends AbstractIndexedSeqTest {
 
     @Test
     public void shouldTransform() {
-        String transformed = of(42).transform(v -> String.valueOf(v.get()));
+        String transformed = of(42).transform(v -> String.valueOf(v.head()));
         assertThat(transformed).isEqualTo("42");
     }
 

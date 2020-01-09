@@ -349,6 +349,11 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
     public abstract BitSet<T> addAll(Iterable<? extends T> elements);
 
     @Override
+    public String className() {
+        return "BitSet";
+    }
+
+    @Override
     public final <R> SortedSet<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
         Objects.requireNonNull(partialFunction, "partialFunction is null");
         return TreeSet.ofAll(Comparators.naturalComparator(), iterator().collect(partialFunction));
@@ -391,10 +396,6 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
     @Override
     public abstract BitSet<T> filterNot(Predicate<? super T> predicate);
 
-    @Deprecated
-    @Override
-    public abstract BitSet<T> reject(Predicate<? super T> predicate);
-
     @Override
     public final <U> SortedSet<U> flatMap(Comparator<? super U> comparator, Function<? super T, ? extends Iterable<? extends U>> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
@@ -434,16 +435,6 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
         return isEmpty() ? Option.none() : Option.some(init());
     }
 
-    /**
-     * An {@code BitSet}'s value is computed synchronously.
-     *
-     * @return false
-     */
-    @Override
-    public final boolean isAsync() {
-        return false;
-    }
-
     @Override
     public final boolean isTraversableAgain() {
         return true;
@@ -477,11 +468,6 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
             action.accept(head());
         }
         return this;
-    }
-
-    @Override
-    public final String stringPrefix() {
-        return "BitSet";
     }
 
     @Override
@@ -849,14 +835,6 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
             return (bitSet.length() == length()) ? this : bitSet;
         }
 
-        @Deprecated
-        @Override
-        public BitSet<T> reject(Predicate<? super T> predicate) {
-            Objects.requireNonNull(predicate, "predicate is null");
-            final BitSet<T> bitSet = createFromAll(iterator().reject(predicate));
-            return (bitSet.length() == length()) ? this : bitSet;
-        }
-
         @Override
         public <C> Map<C, BitSet<T>> groupBy(Function<? super T, ? extends C> classifier) {
             return Collections.groupBy(this, classifier, this::createFromAll);
@@ -971,7 +949,7 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
 
         @Override
         public String toString() {
-            return mkString(stringPrefix() + "(", ", ", ")");
+            return mkString(className() + "(", ", ", ")");
         }
 
         @Override
@@ -996,6 +974,11 @@ public abstract class BitSet<T> implements SortedSet<T>, Serializable {
             this.bitSet = bitSet;
             this.element = bitSet.getWord(0);
             this.index = 0;
+        }
+
+        @Override
+        public String className() {
+            return "BitSetIterator";
         }
 
         @Override
